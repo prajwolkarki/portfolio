@@ -1,21 +1,21 @@
 $(function () {
-
-    $("#contactForm input, #contactForm textarea").jqBootstrapValidation({
+    $("#contactForm input,#contactForm textarea").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function ($form, event, errors) {
+            // Add error messages if needed
         },
         submitSuccess: function ($form, event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission
             var name = $("input#name").val();
             var email = $("input#email").val();
             var subject = $("input#subject").val();
             var message = $("textarea#message").val();
 
-            $this = $("#sendMessageButton");
-            $this.prop("disabled", true);
+            // You can add custom validation rules here if needed
 
+            // Perform your AJAX form submission here
             $.ajax({
-                url: "contact.php",
+                url: "contact.php", // Replace with the URL of your PHP script
                 type: "POST",
                 data: {
                     name: name,
@@ -25,27 +25,26 @@ $(function () {
                 },
                 cache: false,
                 success: function () {
+                    // Handle success, e.g., display a success message
                     $('#success').html("<div class='alert alert-success'>");
-                    $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                            .append("</button>");
                     $('#success > .alert-success')
-                            .append("<strong>Your message has been sent. </strong>");
+                        .html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>")
+                        .append("<strong>Your message has been sent successfully.</strong>");
                     $('#success > .alert-success')
-                            .append('</div>');
-                    $('#contactForm').trigger("reset");
+                        .append('</div>');
+                    // Reset the form if needed
+                    $form.trigger("reset");
                 },
                 error: function () {
+                    // Handle error, e.g., display an error message
                     $('#success').html("<div class='alert alert-danger'>");
-                    $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                            .append("</button>");
-                    $('#success > .alert-danger').append($("<strong>").text("Sorry " + name + ", it seems that our mail server is not responding. Please try again later!"));
-                    $('#success > .alert-danger').append('</div>');
-                    $('#contactForm').trigger("reset");
-                },
-                complete: function () {
-                    setTimeout(function () {
-                        $this.prop("disabled", false);
-                    }, 1000);
+                    $('#success > .alert-danger')
+                        .html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>")
+                        .append("<strong>Sorry " + name + ", it seems that our mail server is not responding. Please try again later!</strong>");
+                    $('#success > .alert-danger')
+                        .append('</div>');
+                    // Reset the form if needed
+                    $form.trigger("reset");
                 }
             });
         },
@@ -54,12 +53,8 @@ $(function () {
         },
     });
 
-    $("a[data-toggle=\"tab\"]").click(function (e) {
-        e.preventDefault();
-        $(this).tab("show");
+    // Prevent focus event from clearing success message
+    $("input#name, input#email, input#subject, textarea#message").focus(function () {
+        $("#success").html("");
     });
-});
-
-$('#name').focus(function () {
-    $('#success').html('');
 });
